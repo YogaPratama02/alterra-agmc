@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  app:
+      container_name: alterra-docker
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      ports: 
+        - 8000:8000 
+      restart: on-failure
+      depends_on:
+        - db          
+      networks:
+        - alterra-network
+      links:
+        - db
+        
+  db:
+    image: mysql:5.7.36
+    container_name: www-db
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: alterra-day7
+      MYSQL_USER: alterra-day7
+      MYSQL_PASSWORD: alterra-day7
+      SERVICE_NAME: mysql
+    networks:
+      - alterra-network
+
+networks:
+  alterra-network:
+    driver: bridge
+
+volumes:
+  db-data:
